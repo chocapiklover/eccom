@@ -1,6 +1,7 @@
 import app from './app';
 import mongoose from 'mongoose';
 
+//TODO: add mongodb URI and create env
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'your_mongo_db_connection_string';
 

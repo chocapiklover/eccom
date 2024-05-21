@@ -1,9 +1,18 @@
-import Image from "next/image";
+'use client';
+
+import { useUserStore } from '../context/userStore'; // Ensure the path is correct
 
 export default function Home() {
+  const { user, logout } = useUserStore();
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-     <h1 className="text-pink-600">hello</h1>
-    </main>
+    <div>
+      <h1>Welcome, {user ? user.name : 'Guest'}</h1>
+      {user ? (
+        <button onClick={logout}>Logout</button>
+      ) : (
+        <p>Please log in to see your details.</p>
+      )}
+    </div>
   );
 }

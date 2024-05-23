@@ -63,7 +63,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
   }
 );
 
-// Method to compare entered password with hashed password
+// Method to compare entered password with hashed password (for login)
 userSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

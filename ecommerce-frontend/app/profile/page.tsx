@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../context/userStore';
 import { useRouter } from 'next/navigation';
-import axios from '../../utils/axios';
+import ProtectedRoute from '../../components/ProtectedRoute';
 
 const Profile = () => {
   const user = useAuthStore((state) => state.user);
@@ -12,7 +12,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user) {
-      router.push('/login'); // Redirect to the login page if not authenticated
+      router.push('/auth/login'); // Redirect to the login page if not authenticated
     }
   }, [user, router]);
 
@@ -46,4 +46,10 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+const ProfilePage = () => (
+  <ProtectedRoute>
+    <Profile />
+  </ProtectedRoute>
+);
+
+export default ProfilePage;

@@ -20,4 +20,4 @@ A cart belongs to one user (Cart to User).
 Many-to-Many (Indirectly through intermediate models like order items and cart items):
 Users can order multiple products through orders.
 Users can add multiple products to their cart.
-Products can belong to multiple orders and carts.
+Products can belong to multiple orders and carts

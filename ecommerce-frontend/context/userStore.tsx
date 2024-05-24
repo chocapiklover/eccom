@@ -19,7 +19,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     // Login function to authenticate the user
   login: async (email, password) => {
     // Send a POST request to the login endpoint with email and password
-    const { data } = await axios.post('/api/users/login', { email, password });
+    const { data } = await axios.post('/users/login', { email, password });
     // Update the user state with the received data
     set({ user: data });
     // Store the user data in local storage
@@ -30,7 +30,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   register: async (name, email, password) => {
 
     // Send a POST request to the register endpoint with name, email, and password
-    const { data } = await axios.post('/api/users', { name, email, password });
+    const { data } = await axios.post('/users', { name, email, password });
     // Update the user state with the received data
     set({ user: data });
     // Store the user data in local storage

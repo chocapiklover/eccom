@@ -29,3 +29,12 @@ export const protect = asyncHandler(async (req: AuthenticatedRequest, res: Respo
     res.status(401).json({ message: 'Not authorized, no token' });
   }
 });
+
+// Middleware to check if user is admin
+export const admin = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  if (req.user && req.user.isAdmin) {
+    next(); // Call the next middleware
+  } else {
+    res.status(403).json({ message: 'Not authorized as admin' });
+  }
+};

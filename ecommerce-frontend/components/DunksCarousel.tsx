@@ -76,7 +76,7 @@ const DunksCarousel = () => {
   return (
     <section className="featured-collection border-b border-gray-300">
     {/* Dunks */}
-    <div className="border-t border-gray-600 bg-gray-200 pb-8 pt-8 text-gray-800 lg:flex items-end justify-between">
+    <div className=" border-gray-600 bg-gray-200 pb-8 pt-8 text-gray-800 lg:flex items-end justify-between">
       <h2 className="font-bold text-3xl px-2">Nike Dunks</h2>
     </div>
 

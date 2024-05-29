@@ -44,7 +44,6 @@ const Home = () => {
         <Showcase />
         <DunksCarousel />
         <Testimonials />
-        <Footer />
         <HoverImageDisplay />
       </div>
     </HoverImageProvider>

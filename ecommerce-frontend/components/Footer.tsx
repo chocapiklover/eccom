@@ -12,7 +12,7 @@ const Footer = () => {
           <button className="bg-transparent text-black border-none underline">Subscribe →</button>
         </div>
       </div>
-      <div className=" flex flex-col md:flex-row border-t border-gray-600">
+      <div className=" flex flex-col md:flex-row border-gray-600">
         <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-600 pt-10 pl-2  md:py-0 pr-4">
           <h3 className="font-semibold mb-2 sm:pt-4">About</h3>
           <p>This is a demo store. Product shots are provided by <a href="https://odto.com" className="underline">ODTO</a>.</p>

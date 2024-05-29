@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 
 const DoubleBanner = () => {
 
@@ -63,10 +64,12 @@ const DoubleBanner = () => {
               Nike Sb Dunk Low Ben & Jerry&apos;s Chunky Dunky
             </p>
           </div>
+          
         </div>
+        
       </div>
       {/* Reverse Banner */}
-      <div className="bg-gray-200 border-b border-t border-gray-800 py-2 overflow-hidden whitespace-nowrap relative">
+      <div className="bg-gray-200  border-t border-gray-800 py-2 overflow-hidden whitespace-nowrap relative">
         <div
           className="flex space-x-4 animate-marqueeReverse py-2 text-2xl"
           style={{ animationPlayState: 'running' }}

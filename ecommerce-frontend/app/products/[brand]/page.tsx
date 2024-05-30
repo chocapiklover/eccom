@@ -54,12 +54,12 @@ const BrandProducts = () => {
     <div className="bg-gray-200 min-h-screen">
     <div>
       <div className="flex justify-between items-center mb-4 border-b border-gray-800">
-        <h1>All Products</h1>
+        <h1 className='text-5xl font-medium pl-2 py-2 capitalize'>{brandName}</h1>
         <div>
           <span className="mr-4 font-semibold">Brands:</span>
           {/* Map through brands and create a link for each */}
           {brands.map((brand) => (
-            <Link key={brand._id} href={`/products/${brand.name.toLowerCase()}`} className="text-blue-500 hover:underline mr-2">
+            <Link key={brand._id} href={`/products/${brand.name.toLowerCase()}`} className="text-pink-500 hover:underline mr-2">
               {brand.name}
             </Link>
           ))}

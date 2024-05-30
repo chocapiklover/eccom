@@ -32,7 +32,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('shop-all')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/all" className="hover:underline hover:text-pink-500">
+          <Link href="/products" className="hover:underline hover:text-pink-500">
             Shop All
           </Link>
           <span className="text-xl ml-2">71</span>
@@ -40,7 +40,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('new-arrivals')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/new" className="hover:underline hover:text-pink-500">
+          <Link href="/products" className="hover:underline hover:text-pink-500">
             New Arrivals
           </Link>
           <span className="text-xl ml-2">7</span>
@@ -48,7 +48,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('air-jordan')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/brands/air-jordan" className="hover:underline hover:text-pink-500">
+          <Link href="/products/air%20jordan" className="hover:underline hover:text-pink-500">
             Air Jordan
           </Link>
           <span className="text-xl ml-2">16</span>
@@ -56,7 +56,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('nike-dunks')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/brands/nike-dunks" className="hover:underline hover:text-pink-500">
+          <Link href="/products/nike%20dunks" className="hover:underline hover:text-pink-500">
             Nike Dunks
           </Link>
           <span className="text-xl ml-2">8</span>
@@ -64,7 +64,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('new-balance')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/brands/new-balance" className="hover:underline hover:text-pink-500">
+          <Link href="/products/new%20balance" className="hover:underline hover:text-pink-500">
             New Balance
           </Link>
           <span className="text-xl ml-2">16</span>
@@ -72,7 +72,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('asics')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/brands/asics" className="hover:underline hover:text-pink-500">
+          <Link href="/products/asics" className="hover:underline hover:text-pink-500">
             Asics
           </Link>
           <span className="text-xl ml-2">7</span>
@@ -80,7 +80,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('converse')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/brands/converse" className="hover:underline hover:text-pink-500">
+          <Link href="/products/converse" className="hover:underline hover:text-pink-500">
             Converse
           </Link>
           <span className="text-xl ml-2">3</span>
@@ -88,7 +88,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('crocs')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/brands/crocs" className="hover:underline hover:text-pink-500">
+          <Link href="/products/crocs" className="hover:underline hover:text-pink-500">
             Crocs
           </Link>
           <span className="text-xl ml-2">4</span>
@@ -96,7 +96,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline mr-8"
              onMouseEnter={() => handleMouseEnter('reebok')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/brands/reebok" className="hover:underline hover:text-pink-500">
+          <Link href="/products/reebok" className="hover:underline hover:text-pink-500">
             Reebok
           </Link>
           <span className="text-xl ml-2">3</span>
@@ -104,7 +104,7 @@ const FeatureSection = () => {
         <div className="flex items-baseline"
              onMouseEnter={() => handleMouseEnter('vans')}
              onMouseLeave={handleMouseLeave}>
-          <Link href="/shop/brands/vans" className="hover:underline hover:text-pink-500">
+          <Link href="/products/vans" className="hover:underline hover:text-pink-500">
             Vans
           </Link>
           <span className="text-xl ml-2">4</span>

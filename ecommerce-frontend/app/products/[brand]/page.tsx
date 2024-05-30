@@ -6,7 +6,7 @@
 import useProducts from '../../../hooks/useProduct';
 import { useState, useEffect } from 'react';
 import { Product } from '../../../types/product';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import useBrands from '../../../hooks/useBrands';
 import Link from 'next/link';
 

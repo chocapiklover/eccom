@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const Footer = () => {
     return (
         <div className="bg-gray-200 border-t border-gray-600">
@@ -15,15 +17,31 @@ const Footer = () => {
       <div className=" flex flex-col md:flex-row border-gray-600">
         <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-600 pt-10 pl-2  md:py-0 pr-4">
           <h3 className="font-semibold mb-2 sm:pt-4">About</h3>
-          <p>This is a demo store. Product shots are provided by <a href="https://odto.com" className="underline">ODTO</a>.</p>
+          <p>This is a demo store. Product shots are provided by <a href="https://www.goat.com/en-de">GOAT</a>.</p>
         </div>
         <div className="flex-1 border-b pt-6 pl-2 md:border-b-0 md:border-r border-gray-600 md:py-0 pr-4">
           <h3 className="font-semibold mb-2 pt-4">Shop</h3>
-          <ul className="pb-8">
-            <li>Shop all</li>
-            <li>New Arrivals</li>
-            <li>On Sale</li>
-            <li>Brands</li>
+          <ul className="pb-8 ">
+            <li>
+              <Link href="/products" className="hover:underline hover:text-pink-500 block">
+                Shop All
+              </Link>
+            </li>
+            <li>
+              <Link href="/products" className="hover:underline hover:text-pink-500 block">
+                New Arrivals
+              </Link>
+            </li>
+            <li>
+              <Link href="/products" className="hover:underline hover:text-pink-500 block">
+                On Sale
+              </Link>
+            </li>
+            <li>
+              <Link href="/products" className="hover:underline hover:text-pink-500 block">
+                Brands
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="flex-1 border-b pl-2 md:border-b-0 md:border-r border-gray-600 py-4 md:py-0 pr-4">

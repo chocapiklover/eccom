@@ -85,43 +85,45 @@ const Navbar = () => {
           </button>
         </div>
       </div>
+
+      {/* drop down menu */}
       {isShopOpen && (
         <div className="absolute left-0 w-full bg-gray-200 border-t border-b border-gray-800 z-10 flex border-l border-r">
           <div className="flex flex-col space-y-2 border-r  border-gray-800 pl-4 pr-12 pt-4">
-            <Link href="/shop/all" className="block hover:underline">
+            <Link href="/products" className="block hover:underline">
               Shop All
             </Link>
-            <Link href="/shop/new" className="block hover:underline">
+            <Link href="/products" className="block hover:underline">
               New Arrivals
             </Link>
-            <Link href="/shop/sale" className="block hover:underline">
+            <Link href="/products" className="block hover:underline">
               On Sale
             </Link>
           </div>
           <div className="flex flex-col space-y-2 border-r  border-gray-800 pl-4 pr-12 pt-4 pb-2 ">
             <span className="block font-bold pb-2">Brands</span>
-            <Link href="/shop/brands/air-jordan" className="block hover:underline">
+            <Link href="/products/air%20jordan" className="block hover:underline">
               Air Jordan
             </Link>
-            <Link href="/shop/brands/asics" className="block hover:underline">
+            <Link href="/products/asics" className="block hover:underline">
               Asics
             </Link>
-            <Link href="/shop/brands/converse" className="block hover:underline">
+            <Link href="/products/converse" className="block hover:underline">
               Converse
             </Link>
-            <Link href="/shop/brands/crocs" className="block hover:underline">
+            <Link href="/products/crocs" className="block hover:underline">
               Crocs
             </Link>
-            <Link href="/shop/brands/new-balance" className="block hover:underline">
+            <Link href="/products/new%20balance" className="block hover:underline">
               New Balance
             </Link>
-            <Link href="/shop/brands/nike-dunks" className="block hover:underline">
+            <Link href="/products/nike%20dunks" className="block hover:underline">
               Nike Dunks
             </Link>
-            <Link href="/shop/brands/reebok" className="block hover:underline">
+            <Link href="/products/reebok" className="block hover:underline">
               Reebok
             </Link>
-            <Link href="/shop/brands/vans" className="block hover:underline">
+            <Link href="/products/vans" className="block hover:underline">
               Vans
             </Link>
           </div>
@@ -145,10 +147,10 @@ const Navbar = () => {
           <div className="w-full border-b border-gray-700 pb-4">
             <Link href="/shop" className="block text-3xl hover:underline">Shop</Link>
             <div className="mt-4 space-y-2 ml-4 text-2xl">
-              <Link href="/shop/all" className="block text-base hover:underline">Shop All</Link>
-              <Link href="/shop/new" className="block text-base hover:underline">New Arrivals</Link>
-              <Link href="/shop/sale" className="block text-base hover:underline">On Sale</Link>
-              <Link href="/shop/brands" className="block text-base hover:underline">Brands</Link>
+              <Link href="/products" className="block text-base hover:underline">Shop All</Link>
+              <Link href="/products" className="block text-base hover:underline">New Arrivals</Link>
+              <Link href="/products" className="block text-base hover:underline">On Sale</Link>
+              <Link href="/products" className="block text-base hover:underline">Brands</Link>
             </div>
           </div>
           <div className="w-full border-b border-gray-900 pb-4">

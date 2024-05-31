@@ -51,6 +51,8 @@ const BrandProducts = () => {
   if (!brandName) return <div>Brand is not specified</div>;
 
   return (
+
+    // {/* Top Section with the selected brand and list of brands */}
     <div className="bg-gray-200 min-h-screen">
       <div className=" border-b border-gray-800 w-screen">
           <h1 className="text-5xl font-medium capitalize pl-2 mb-4 pt-3 ">{brandName}</h1>
@@ -65,12 +67,12 @@ const BrandProducts = () => {
 
 
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-grow">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-grow">
         {filteredProducts.length === 0 ? (
           <div>No products found for this brand.</div>
         ) : (
           filteredProducts.map((product) => (
-            <div key={product._id} className="border p-6 h-[40vh] flex flex-col border-gray-800">
+            <Link key={product._id} href={`/products/listings/${product._id}`} className="border p-6 h-[40vh] flex flex-col border-gray-800">
               <div className="flex-grow overflow-hidden">
                 <img
                   src={product.images[0]}
@@ -78,13 +80,14 @@ const BrandProducts = () => {
                   className="w-full h-full object-contain mb-4"
                 />
               </div>
-              <h2 className=" text-sm sm:text-lg font-semibold mb-2">{product.name}</h2>
+              <h2 className="text-sm sm:text-lg font-semibold mb-2">{product.name}</h2>
               <p className="text-gray-600">${product.price}</p>
-            </div>
+            </Link>
           ))
         )}
       </div>
     </div>
+    
   );
 };
 

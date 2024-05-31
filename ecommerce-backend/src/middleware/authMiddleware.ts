@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 import User, { IUserWithId } from '../models/User';
 
 // Define an interface for authenticated requests
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
   user?: IUserWithId;
 }
 

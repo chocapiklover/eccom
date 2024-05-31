@@ -5,24 +5,26 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from '../../../../utils/axios';
 import { useParams } from 'next/navigation';
+import { Product } from '../../../../types/product';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const ProductPage = () => {
   const { id } = useParams(); // Get the dynamic route parameter
-  const [product, setProduct] = useState<any>(null); // State to hold the product data
+  const [product, setProduct] = useState<Product | null>(null); // State to hold the product data
   const [loading, setLoading] = useState<boolean>(true); // State to manage loading status
   const [error, setError] = useState<string | null>(null); // State to manage error messages
+  const [selectedSize, setSelectedSize] = useState<string | null>(null); // State to manage selected size
 
   useEffect(() => {
     if (id) {
-      // Function to fetch product data from the API
       const fetchProduct = async () => {
         try {
           setLoading(true); // Set loading state to true before fetching data
-          console.log(`Fetching product with ID: ${id}`); // Debugging log
           const response = await axios.get(`/products/${id}`);
           setProduct(response.data); // Update product state with fetched data
         } catch (err) {
-          console.error('Error fetching product:', err); // Debugging log
           setError('Failed to fetch product'); // Set error message if fetching fails
         } finally {
           setLoading(false); // Set loading state to false after fetching data
@@ -33,18 +35,64 @@ const ProductPage = () => {
     }
   }, [id]); // Dependency array to re-run the effect when the product ID changes
 
-  // Display loading message while data is being fetched
-  if (loading) return <div>Loading...</div>;
+  const handleSizeClick = (size: string) => {
+    setSelectedSize(size);
+  };
 
-  // Display error message if fetching fails
-  if (error) return <div>{error}</div>;
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+    adaptiveHeight: true, // Adjust the height based on the slide content
+  };
+
+  if (loading) return <div>Loading...</div>; // Display loading message while data is being fetched
+  if (error) return <div>{error}</div>; // Display error message if fetching fails
 
   return (
-    <div className="p-6 bg-gray-200"> {/* Container with padding */}
-      <h1 className="text-5xl font-medium mb-4">{product.name}</h1> {/* Product name */}
-      <img src={product.images[0]} alt={product.name} className="w-full h-auto mb-4" /> {/* Product image */}
-      <p className="text-gray-500">${product.price}</p> {/* Product price */}
-      <p>{product.description}</p> {/* Product description */}
+    <div className="bg-gray-200 min-h-screen h-screen flex"> {/* Main container */}
+      <div className="w-full h-full mx-auto grid grid-cols-1 lg:grid-cols-2"> {/* Grid container */}
+        <div className="flex justify-center items-center p-4 border-b lg:border-r border-gray-800"> {/* Image container */}
+          <div className="w-full slick-slider"> {/* Slider container */}
+            <Slider {...settings} className="slick-list">
+              {product?.images.map((image, index) => (
+                <div key={index} className="flex justify-center items-center w-full">
+                  <img src={image} alt={product?.name} className="w-full h-auto max-h-96 object-contain" />
+                </div>
+              ))}
+            </Slider>
+          </div>
+        </div>
+        <div className="bg-gray-200 p-2 border-b border-gray-800"> {/* Details container */}
+          <h1 className="text-5xl sm:text-8xl font-medium mb-4">{product?.name}</h1> {/* Product name */}
+          <p className="text-gray-500 text-2xl mb-4">${product?.price}</p> {/* Product price */}
+          <div className="mb-4">
+            <span className="text-xl">Size:</span>
+            <div className="flex space-x-2 mt-2">
+              {product?.size.map((size: string) => (
+                <button
+                  key={size}
+                  className={`px-4 py-2 border ${selectedSize === size ? 'bg-pink-500 text-white' : 'border-gray-300 hover:border-pink-500 hover:text-pink-500'}`}
+                  onClick={() => handleSizeClick(size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+          <button className="w-full max-w-3xl py-3 text-lg border border-black mb-2 hover:border-pink-500 hover:text-pink-500">Add to cart</button>
+          <button className="w-full max-w-3xl py-3 bg-black text-white text-lg hover:bg-pink-500">Buy it now</button>
+          <div className="mt-4">
+          
+          </div>
+          <div className="mt-4">
+            <p>{product?.description}</p> {/* Product description */}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

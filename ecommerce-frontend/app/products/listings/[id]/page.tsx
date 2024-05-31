@@ -40,7 +40,7 @@ const ProductPage = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="p-6"> {/* Container with padding */}
+    <div className="p-6 bg-gray-200"> {/* Container with padding */}
       <h1 className="text-5xl font-medium mb-4">{product.name}</h1> {/* Product name */}
       <img src={product.images[0]} alt={product.name} className="w-full h-auto mb-4" /> {/* Product image */}
       <p className="text-gray-500">${product.price}</p> {/* Product price */}

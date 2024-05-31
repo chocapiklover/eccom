@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes'
 import productRoutes from './routes/productRoutes';
 import brandRoutes from './routes/brandRoutes';
+import cartRoutes from './routes/cartRoutes';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/api/users', userRoutes)
 app.use('/api/products', productRoutes);
 app.use('/api/brands', brandRoutes);
+app.use('/api/cart', cartRoutes);
 
 
 

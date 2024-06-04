@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes'
 import productRoutes from './routes/productRoutes';
 import brandRoutes from './routes/brandRoutes';
 import cartRoutes from './routes/cartRoutes';
+import paymentRoutes from './routes/paymentRoutes';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/products', productRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/payment', paymentRoutes)
 
 
 

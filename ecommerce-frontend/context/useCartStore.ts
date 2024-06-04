@@ -21,6 +21,7 @@ interface CartState {
   addItem: (productId: string, quantity: number, size: string) => Promise<void>;
   removeItem: (productId: string, size: string) => Promise<void>;
   fetchCart: (userId: string) => Promise<void>;
+  clearCart: () => void;
 }
 
 // Define the state creator function 
@@ -31,35 +32,36 @@ const cartStateCreator: StateCreator<CartState, [], []> = (set) => ({
     const userId = useAuthStore.getState().user?._id; // Get the userId from the auth store
     if (!userId) throw new Error("User is not authenticated");
 
-    // POST request to add item to backend
-    const { data } = await axios.post('/cart', { productId, quantity, size, userId });
-
-    // Fetch the latest cart items after adding the item
-    const updatedCart = await axios.get(`/cart/${userId}`);
-    set({ items: updatedCart.data.cartItems });
+    //POST request to add item to backend
+    const { data } = await axios.post('/cart', { productId, quantity, userId, size });
+    
+    //Updats cart state with the data from the backend
+    set({ items: data.cartItems }); 
   },
   // Remove item from the cart
   removeItem: async (productId: string, size: string) => {
     const userId = useAuthStore.getState().user?._id; // Get the userId from the auth store
     if (!userId) throw new Error("User is not authenticated");
 
-    // DELETE request to remove item from backend
+    //POST request to add item to backend
     const { data } = await axios.delete(`/cart/${userId}/${productId}/${size}`);
 
-    // Fetch the latest cart items after removing the item
-    const updatedCart = await axios.get(`/cart/${userId}`);
-    set({ items: updatedCart.data.cartItems });
+    //Updates cart state with data from backend
+    set({ items: data.cartItems });
   },
   // Fetch cart items from the server
   fetchCart: async (userId: string) => {
     const { data } = await axios.get(`/cart/${userId}`);
-    set({ items: data.cartItems });
+    set({ items: data.cartItems }); 
   },
+  // Clear the cart
+  clearCart: () => set({ items: [] }),
 });
 
 // Create a Zustand store for the cart state, with persistence
 export const useCartStore = create<CartState>()(
-  // Persist the cart state in local storage.
+
+  //persist the cart state in local storage. 
   persist(cartStateCreator, {
     name: 'cart-storage', // unique name for the local storage key
     storage: createJSONStorage(() => localStorage), // use localStorage for persistence

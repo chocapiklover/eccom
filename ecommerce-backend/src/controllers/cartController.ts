@@ -1,10 +1,10 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import Cart from '../models/Cart';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
 
 // Add item to cart
 export const addItemToCart = async (req: AuthenticatedRequest, res: Response) => {
-  const { productId, quantity } = req.body;
+  const { productId, quantity, size } = req.body; // Include size in the request body
   const userId = req.user?._id;
 
   try {
@@ -12,20 +12,20 @@ export const addItemToCart = async (req: AuthenticatedRequest, res: Response) =>
 
     if (cart) {
       // If cart exists, update it
-      const itemIndex = cart.cartItems.findIndex(item => item.product.toString() === productId);
+      const itemIndex = cart.cartItems.findIndex(item => item.product.toString() === productId && item.size === size);
 
       if (itemIndex > -1) {
-        // Item exists in cart, update the quantity
+        // Item exists in cart with the same size, update the quantity
         cart.cartItems[itemIndex].quantity += quantity;
       } else {
         // Item does not exist in cart, add new item
-        cart.cartItems.push({ product: productId, quantity });
+        cart.cartItems.push({ product: productId, quantity, size });
       }
     } else {
       // No cart for user, create new cart
       cart = new Cart({
         user: userId,
-        cartItems: [{ product: productId, quantity }]
+        cartItems: [{ product: productId, quantity, size }]
       });
     }
 
@@ -56,13 +56,14 @@ export const getCartItems = async (req: AuthenticatedRequest, res: Response) => 
 // Remove item from cart
 export const removeItemFromCart = async (req: AuthenticatedRequest, res: Response) => {
   const userId = req.user?._id;
-  const { productId } = req.params;
+  const { productId, size } = req.params; // Include size in the params
 
   try {
     const cart = await Cart.findOne({ user: userId });
 
     if (cart) {
-      cart.cartItems = cart.cartItems.filter(item => item.product.toString() !== productId);
+      // Remove item from cart based on productId and size
+      cart.cartItems = cart.cartItems.filter(item => item.product.toString() !== productId || item.size !== size);
       await cart.save();
       res.status(200).json(cart);
     } else {

@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from '../../../../utils/axios';
 import { useParams } from 'next/navigation';
@@ -9,6 +8,9 @@ import { Product } from '../../../../types/product';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useCartStore } from '../../../../context/useCartStore'; 
+import { useAuthStore } from '../../../../context/userStore'; 
+import Cart from '../../../../components/Cart';
 
 const ProductPage = () => {
   const { id } = useParams(); // Get the dynamic route parameter
@@ -16,6 +18,10 @@ const ProductPage = () => {
   const [loading, setLoading] = useState<boolean>(true); // State to manage loading status
   const [error, setError] = useState<string | null>(null); // State to manage error messages
   const [selectedSize, setSelectedSize] = useState<string | null>(null); // State to manage selected size
+  const { addItem } = useCartStore(); // Access the addItem function from the cart store
+  const { user } = useAuthStore(); // Access the user from the auth store
+  const [isCartVisible, setIsCartVisible] = useState(false); // State to manage cart visibility
+
 
   useEffect(() => {
     if (id) {
@@ -37,6 +43,26 @@ const ProductPage = () => {
 
   const handleSizeClick = (size: string) => {
     setSelectedSize(size);
+  };
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      alert('Please log in to add items to the cart');
+      return;
+    }
+    if (!selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+    if (product) {
+      try {
+        await addItem(product._id, 1, selectedSize); // Add the item to the cart with quantity 1 and selected size
+        setIsCartVisible(true); // Show the cart component
+      } catch (error) {
+        console.error(error);
+        alert('Failed to add item to cart');
+      }
+    }
   };
 
   const settings = {
@@ -83,16 +109,29 @@ const ProductPage = () => {
               ))}
             </div>
           </div>
-          <button className="w-full max-w-3xl py-3 text-lg border border-black mb-2 hover:border-pink-500 hover:text-pink-500">Add to cart</button>
-          <button className="w-full max-w-3xl py-3 bg-black text-white text-lg hover:bg-pink-500">Buy it now</button>
-          <div className="mt-4">
-          
-          </div>
+          <button onClick={handleAddToCart} className="w-full max-w-3xl py-3 text-lg border border-black mb-2 hover:border-pink-500 hover:text-pink-500">
+            Add to cart
+          </button>
+          <button className="w-full max-w-3xl py-3 bg-black text-white text-lg hover:bg-pink-500">
+            Buy it now
+          </button>
           <div className="mt-4">
             <p>{product?.description}</p> {/* Product description */}
           </div>
         </div>
       </div>
+        {/* Cart Component */}
+        {isCartVisible && (
+        <div className="fixed w-76 top-0 right-0 h-full sm:w-96 bg-gray-200 border-l border-gray-900 p-2 z-30">
+          <button
+            onClick={() => setIsCartVisible(false)}
+            className="text-gray-900 focus:outline-none pl-2 mb-4 text-3xl"
+          >
+            ✕
+          </button>
+          <Cart userId={user._id} /> {/* Pass the userId prop */}
+        </div>
+      )}
     </div>
   );
 };

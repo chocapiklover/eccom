@@ -5,6 +5,7 @@ export interface ICart extends Document {
   cartItems: {
     product: mongoose.Schema.Types.ObjectId;
     quantity: number;
+    size: string; // Add size property
   }[];
 }
 
@@ -25,6 +26,10 @@ const cartSchema: Schema<ICart> = new mongoose.Schema(
         quantity: {
           type: Number,
           required: true,
+        },
+        size: {
+          type: String,
+          required: true, 
         },
       },
     ],

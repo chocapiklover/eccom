@@ -39,7 +39,7 @@ const Cart: React.FC<CartProps> = ({ userId }) => {
                 <img
                   src={item.product.images?.[0] || '/path/to/fallback/image.png'} // Fallback image
                   alt={item.product.name}
-                  className="w-16 h-16 object-cover mr-4"
+                  className="w-16 h-16 object-contain  mr-4"
                 />
                 <div>
                   <span className="block text-lg font-semibold">{item.product.name}</span>

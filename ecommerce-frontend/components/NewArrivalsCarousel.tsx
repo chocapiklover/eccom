@@ -5,36 +5,8 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick';
 import { BsArrowRight } from "react-icons/bs";
 import { BsArrowLeft } from "react-icons/bs";
-
-
-const products = [
- 
-  {
-    name: "New Balance 2002R Ssense Corduroy",
-    price: "$520.00",
-    image: "https://baseline-preset-modern-2.myshopify.com/cdn/shop/files/9238d2b2-9c47-4a75-b571-85650801b610.png?v=1698857559&width=2560"
-  },
-  {
-    name: "Air Jordan 1 Low Wmns Ice Blue",
-    price: "$400.00",
-    image: "https://baseline-preset-modern-2.myshopify.com/cdn/shop/files/3cd56472-c705-4dfe-8751-4fd4a335078b.png?v=1698491505&width=850"
-  },
-  {
-    name: "Vans Authentic Pro Supreme Checkers Red",
-    price: "$800.00",
-    image: "https://baseline-preset-modern-2.myshopify.com/cdn/shop/files/c6119db5-0ae1-419f-b62c-26226d5e483c.png?v=1698869304&width=2560"
-  },
-  {
-    name: "Nike Sb Dunk Low Ben & Jerry's Chunky Dunky",
-    price: "$2,400.00",
-    image: "https://baseline-preset-modern-2.myshopify.com/cdn/shop/files/e30d457f-1e28-4e8f-a84f-005ff0305a27.png?v=1698412399&width=2560"
-  }, 
-  {
-    name: "New Balance 990V6 Action Bronson Lapis Lazuli",
-    price: "$580.00",
-    image: "https://baseline-preset-modern-2.myshopify.com/cdn/shop/files/a71cc7a9-9f88-4ad3-94f8-17b0607f67c5.png?v=1698747693&width=1920"
-  },
-];
+import useProducts from '../hooks/useProduct'; // Import your hook
+import Link from 'next/link';
 
 const settings = {
   dots: true,
@@ -71,12 +43,19 @@ const settings = {
   ]
 };
 
-
 const NewArrivalsCarousel = () => {
+  const { products, loading, error } = useProducts(); // Use the hook to fetch products
+
+  if (loading) return <div>Loading...</div>; // Handle loading state
+  if (error) return <div>{error}</div>; // Handle error state
+
+  // Limit the number of products to display
+  const displayedProducts = products.slice(0, 7);
+
   return (
     <section className="featured-collection border-b border-gray-300 ">
        {/* Announcement Bar */}
-       <div className="bg-pink-400  border-t border-gray-800 py-3 overflow-hidden whitespace-nowrap relative">
+       <div className="bg-pink-400 border-t border-gray-800 py-3 overflow-hidden whitespace-nowrap relative">
         <div className="flex space-x-4 animate-marquee text-4xl"
             style={{ animationPlayState: 'running' }} 
             onMouseEnter={e => e.currentTarget.style.animationPlayState = 'paused'} 
@@ -114,28 +93,28 @@ const NewArrivalsCarousel = () => {
         </div>
 
         {/* New Arrivals */}
-      <div className="border-t  border-gray-600 bg-gray-200 pb-8 pt-8 text-gray-800 lg:flex items-end justify-between">
+      <div className="border-t border-gray-600 bg-gray-200 pb-8 pt-8 text-gray-800 lg:flex items-end justify-between">
         <h2 className="font-bold text-3xl px-2">Latest Arrivals</h2>
       </div>
 
       {/* Carousel */}
       <div className="bg-gray-200 overflow-hidden pb-8">
         <Slider {...settings}>
-          {products.map((product, index) => (
-            <div key={index} className="">  {/* Add padding to control spacing */}
-              <div className="border border-gray-600 flex flex-col h-auto">
-                <div className="flex-grow">
+          {displayedProducts.map((product, index) => (
+            <div key={index} className="flex justify-center">  {/* Add padding to control spacing */}
+              <Link href={`/products/listings/${product._id}`} className="border border-gray-600 flex flex-col h-full" style={{ height: '400px' }}>
+                <div className="flex-grow flex items-center justify-center overflow-hidden bg-gray-200" style={{ height: '300px' }}>
                   <img
-                    src={product.image}
+                    src={product.images[0]} // Use the product image from the fetched data
                     alt={product.name}
-                    className="w-full object-cover h-auto max-h-80 lg:max-h-96 md:max-h-80 sm:max-h-64"
+                    className="ww-full object-cover px-2 h-auto max-h-80 lg:max-h-96 md:max-h-80 sm:max-h-64"
                   />
                 </div>
-                <div className="border-t border-gray-600 p-4 flex flex-col justify-between">
+                <div className="border-t border-gray-600 p-4 flex flex-col justify-between bg-gray-200" style={{ height: '100px' }}>
                   <h3 className="text-lg font-semibold truncate">{product.name}</h3>
-                  <p className="text-gray-500">{product.price}</p>
+                  <p className="text-gray-500">${product.price}</p>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </Slider>

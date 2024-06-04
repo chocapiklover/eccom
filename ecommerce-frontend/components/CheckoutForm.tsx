@@ -6,7 +6,7 @@ import { useCartStore } from '../context/useCartStore';
 const CheckoutForm: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const { items, clearCart } = useCartStore();
+  const { items, clearCart } = useCartStore(); // Access the addItem function from the cart store
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
@@ -75,6 +75,7 @@ const CheckoutForm: React.FC = () => {
         // Clear the cart
         clearCart();
 
+        // Show the cart component after successful payment
         alert('Payment succeeded!');
       }
     } catch (err) {

@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect } from 'react';
 import { useCartStore } from '../context/useCartStore';
+import { useRouter } from 'next/navigation';
+import axios from '../utils/axios';
 
 // Define the props interface
 interface CartProps {
@@ -9,6 +11,7 @@ interface CartProps {
 
 const Cart: React.FC<CartProps> = ({ userId }) => {
   const { items, removeItem, fetchCart } = useCartStore(); // Access the cart items and functions
+  const router = useRouter();
 
   // Fetch cart items when the component mounts
   useEffect(() => {
@@ -22,6 +25,16 @@ const Cart: React.FC<CartProps> = ({ userId }) => {
 
     fetchCartItems();
   }, [userId, fetchCart]);
+
+  const handleCheckout = async () => {
+    try {
+      const { data } = await axios.post('/checkout/create-checkout-session', { userId });
+      router.push(data.url); // Redirect to Stripe Checkout
+    } catch (error) {
+      console.error('Checkout error:', error);
+    }
+  };
+
 
   return (
     <div className="p-4 sm:w-96 h-full bg-gray-200">
@@ -64,7 +77,7 @@ const Cart: React.FC<CartProps> = ({ userId }) => {
           <span className="text-lg font-semibold">Subtotal</span>
           <span className="text-lg font-semibold">${items.reduce((total, item) => total + item.product.price * item.quantity, 0)}</span>
         </div>
-        <button className="w-full py-3 bg-black text-white font-bold">Check out →</button>
+        <button className="w-full py-3 bg-black text-white font-bold mt-4" onClick={handleCheckout}>Check out →</button>
       </div>
     </div>
   );

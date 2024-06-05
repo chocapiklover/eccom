@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
+import Cart from '../models/Cart';
+import { AuthenticatedRequest } from '../middleware/authMiddleware';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Initialize Stripe with your secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -7,30 +12,38 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 // Controller to create a payment intent
-export const createPaymentIntent = async (req: Request, res: Response) => {
-  const { items } = req.body;
-
-  // Function to calculate order amount based on items
-  const calculateOrderAmount = (items: any[]): number => {
-    return items.reduce((total, item) => total + item.price * item.quantity, 0) * 100; // Convert to cents
-  };
-
-  try {
-    // Create a payment intent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: calculateOrderAmount(items),
-      currency: 'eur',
-    });
-
-    // Send the client secret of the payment intent to the client
-    res.status(200).send({
-      clientSecret: paymentIntent.client_secret,
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).send({ error: error.message }); // Send error message to the client
-    } else {
-      res.status(500).send({ error: 'An unknown error occurred' });
+// Create checkout session
+export const createCheckoutSession = async (req: AuthenticatedRequest, res: Response) => {
+    const { userId } = req.body;
+  
+    try {
+      const cart = await Cart.findOne({ user: userId }).populate('cartItems.product');
+      
+      if (!cart) {
+        return res.status(404).json({ message: 'Cart not found' });
+      }
+  
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: cart.cartItems.map((item) => ({
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: item.product.name,
+              images: [item.product.images[0]],
+            },
+            unit_amount: item.product.price * 100,
+          },
+          quantity: item.quantity,
+        })),
+        mode: 'payment',
+        success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.CLIENT_URL}/cart`,
+      });
+  
+      res.status(200).json({ url: session.url });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to create checkout session', error: error instanceof Error ? error.message : 'Unknown error' });
     }
-  }
-};
+  };

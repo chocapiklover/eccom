@@ -41,6 +41,7 @@ export const createCheckoutSession = async (req: AuthenticatedRequest, res: Resp
       mode: 'payment', // Set the mode to payment
       success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`, // Set the success URL
       cancel_url: `${process.env.CLIENT_URL}/cart`, // Set the cancel URL
+      client_reference_id: userId, // Add this line to include the user ID
     });
 
     // Return the session URL to the client

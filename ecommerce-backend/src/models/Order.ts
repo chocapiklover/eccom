@@ -1,30 +1,62 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IOrder extends Document {
-  email: string;
-  name: string;
-  address: string;
-  items: {
+  user: mongoose.Schema.Types.ObjectId;
+  orderItems: {
     product: mongoose.Schema.Types.ObjectId;
     quantity: number;
+    price: number;
     size: string;
   }[];
+  totalPrice: number;
+  isPaid: boolean;
+  paidAt?: Date;
 }
 
 const orderSchema: Schema<IOrder> = new mongoose.Schema(
   {
-    email: { type: String, required: true },
-    name: { type: String, required: true },
-    address: { type: String, required: true },
-    items: [
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
+    orderItems: [
       {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-        quantity: { type: Number, required: true },
-        size: { type: String, required: true },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: 'Product',
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        size: {
+          type: String,
+          required: true,
+        },
       },
     ],
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
+    isPaid: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    paidAt: {
+      type: Date,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Order = mongoose.model<IOrder>('Order', orderSchema);

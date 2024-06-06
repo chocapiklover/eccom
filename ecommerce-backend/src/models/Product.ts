@@ -1,16 +1,23 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+// Define an interface for the size and stock quantity
+interface SizeStock {
+  size: string;
+  stockQuantity: number;
+}
+
+// Define an interface for the product document
 export interface IProduct extends Document {
   name: string;
   description: string;
   price: number;
   brand: mongoose.Schema.Types.ObjectId;
-  size: string[];
+  sizeStock: SizeStock[];
   color: string;
-  stockQuantity: number;
   images: string[];
 }
 
+// Create the product schema
 const productSchema: Schema<IProduct> = new mongoose.Schema(
   {
     name: {
@@ -30,16 +37,20 @@ const productSchema: Schema<IProduct> = new mongoose.Schema(
       ref: 'Brand',
       required: true,
     },
-    size: {
-      type: [String],
-      required: true,
-    },
+    sizeStock: [
+      {
+        size: {
+          type: String,
+          required: true,
+        },
+        stockQuantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
     color: {
       type: String,
-      required: true,
-    },
-    stockQuantity: {
-      type: Number,
       required: true,
     },
     images: {
@@ -52,6 +63,7 @@ const productSchema: Schema<IProduct> = new mongoose.Schema(
   }
 );
 
+// Create the product model
 const Product = mongoose.model<IProduct>('Product', productSchema);
 
 export default Product;

@@ -29,9 +29,11 @@ export const addItemToCart = async (req: AuthenticatedRequest, res: Response) =>
       });
     }
 
+    // Populate the cart items with product details
     await cart.save();
-    res.status(200).json(cart);
+    await cart.populate('cartItems.product');
 
+    res.status(200).json(cart);
   } catch (error) {
     res.status(500).json({ message: 'Failed to add item to cart', error });
   }
@@ -65,6 +67,7 @@ export const removeItemFromCart = async (req: AuthenticatedRequest, res: Respons
       // Remove item from cart based on productId and size
       cart.cartItems = cart.cartItems.filter(item => item.product.toString() !== productId || item.size !== size);
       await cart.save();
+      await cart.populate('cartItems.product');
       res.status(200).json(cart);
     } else {
       res.status(404).json({ message: 'Cart not found' });

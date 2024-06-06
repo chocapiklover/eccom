@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -21,7 +22,6 @@ const ProductPage = () => {
   const { addItem } = useCartStore(); // Access the addItem function from the cart store
   const { user } = useAuthStore(); // Access the user from the auth store
   const [isCartVisible, setIsCartVisible] = useState(false); // State to manage cart visibility
-
 
   useEffect(() => {
     if (id) {
@@ -98,13 +98,13 @@ const ProductPage = () => {
           <div className="mb-4">
             <span className="text-xl">Size:</span>
             <div className="flex space-x-2 mt-2">
-              {product?.size.map((size: string) => (
+              {product?.sizeStock.map((sizeItem) => (
                 <button
-                  key={size}
-                  className={`px-4 py-2 border ${selectedSize === size ? 'bg-pink-500 text-white' : 'border-gray-300 hover:border-pink-500 hover:text-pink-500'}`}
-                  onClick={() => handleSizeClick(size)}
+                  key={sizeItem.size}
+                  className={`px-4 py-2 border ${selectedSize === sizeItem.size ? 'bg-pink-500 text-white' : 'border-gray-300 hover:border-pink-500 hover:text-pink-500'}`}
+                  onClick={() => handleSizeClick(sizeItem.size)}
                 >
-                  {size}
+                  {sizeItem.size}
                 </button>
               ))}
             </div>
@@ -120,8 +120,8 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
-        {/* Cart Component */}
-        {isCartVisible && (
+      {/* Cart Component */}
+      {isCartVisible && (
         <div className="fixed w-76 top-0 right-0 h-full sm:w-96 bg-gray-200 border-l border-gray-900 p-2 z-30">
           <button
             onClick={() => setIsCartVisible(false)}

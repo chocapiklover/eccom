@@ -10,11 +10,13 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ userId }) => {
-  const { items, removeItem, fetchCart } = useCartStore(); // Access the cart items and functions
+  const items = useCartStore(state => state.items); // Access the cart items from Zustand store
+  const removeItem = useCartStore(state => state.removeItem); // Access removeItem function
+  const fetchCart = useCartStore(state => state.fetchCart); // Access fetchCart function
   const router = useRouter();
 
-  // Fetch cart items when the component mounts
-  useEffect(() => {
+  // Fetch cart items when the component mounts or when userId changes
+  React.useEffect(() => {
     const fetchCartItems = async () => {
       try {
         await fetchCart(userId);
@@ -35,12 +37,10 @@ const Cart: React.FC<CartProps> = ({ userId }) => {
     }
   };
 
-
   return (
     <div className="p-4 sm:w-96 h-full bg-gray-200">
       <div className="flex justify-between items-center border-b pb-4 mb-4">
         <h2 className="text-xl font-bold">Your cart - {items.length} item{items.length !== 1 && 's'}</h2>
-        
       </div>
       {items.length === 0 ? (
         <p>Your cart is empty</p>
@@ -50,7 +50,7 @@ const Cart: React.FC<CartProps> = ({ userId }) => {
             <li key={`${item.product._id}-${item.size}`} className="mb-4 border-b pb-4 flex justify-between">
               <div className="flex items-center">
                 <img
-                  src={item.product.images?.[0] || '/path/to/fallback/image.png'} // Fallback image
+                  src={item.product.images?.[0] } 
                   alt={item.product.name}
                   className="w-16 h-16 object-contain  mr-4"
                 />

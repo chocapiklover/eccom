@@ -10,7 +10,7 @@ interface CartItem {
     name: string;
     price: number;
     images: string[];
-    quantity: number; // Add quantity to keep track of stock
+    sizeStock: { size: string; stockQuantity: number }[]; // Add sizeStock to product interface
   };
   quantity: number;
   size: string;
@@ -28,23 +28,28 @@ interface CartState {
 // Define the state creator function
 const cartStateCreator: StateCreator<CartState, [], []> = (set, get) => ({
   items: [],
-  
+
   // Add item to the cart
   addItem: async (productId: string, quantity: number, size: string) => {
     const userId = useAuthStore.getState().user?._id; // Get the userId from the auth store
     if (!userId) throw new Error("User is not authenticated");
 
-    // Fetch product details to get the stock quantity
+    // Fetch product details to get the stock quantity for the specific size
     const productResponse = await axios.get(`/products/${productId}`);
     const product = productResponse.data;
+    const sizeStock = product.sizeStock.find((item: { size: string }) => item.size === size);
+
+    if (!sizeStock) {
+      throw new Error("Size not found for the product");
+    }
 
     // Check the total quantity of the product already in the cart
     const existingItem = get().items.find(item => item.product._id === productId && item.size === size);
     const existingQuantity = existingItem ? existingItem.quantity : 0;
 
     // Check if the requested quantity plus existing quantity is less than or equal to the available stock
-    if (existingQuantity + quantity > product.quantity) {
-      throw new Error("Requested quantity exceeds available stock");
+    if (existingQuantity + quantity > sizeStock.stockQuantity) {
+      throw new Error("Requested quantity exceeds available stock for this size");
     }
 
     // POST request to add item to backend

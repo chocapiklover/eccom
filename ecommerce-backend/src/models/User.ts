@@ -7,11 +7,12 @@ export interface IUser extends Document {
   email: string;
   password: string;
   isAdmin: boolean;
-  address: {
-    street: string;
+  shippingAddress?: {
+    line1: string;
+    line2?: string;
     city: string;
     state: string;
-    postalCode: string;
+    postal_code: string;
     country: string;
   };
   orderHistory: mongoose.Schema.Types.ObjectId[];
@@ -44,11 +45,12 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       required: true, // isAdmin is required
       default: false, // Default value for isAdmin is false
     },
-    address: {
-      street: { type: String },
+    shippingAddress: {
+      line1: { type: String },
+      line2: { type: String },
       city: { type: String },
       state: { type: String },
-      postalCode: { type: String },
+      postal_code: { type: String },
       country: { type: String },
     },
     orderHistory: [

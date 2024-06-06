@@ -1,7 +1,7 @@
 import { create, StateCreator } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import axios from '../utils/axios';
-import { useAuthStore } from './userStore'; 
+import { useAuthStore } from './userStore';
 
 // Interface for a populated cart item
 interface CartItem {
@@ -10,6 +10,7 @@ interface CartItem {
     name: string;
     price: number;
     images: string[];
+    quantity: number; // Add quantity to keep track of stock
   };
   quantity: number;
   size: string;
@@ -24,44 +25,59 @@ interface CartState {
   clearCart: () => void;
 }
 
-// Define the state creator function 
-const cartStateCreator: StateCreator<CartState, [], []> = (set) => ({
+// Define the state creator function
+const cartStateCreator: StateCreator<CartState, [], []> = (set, get) => ({
   items: [],
+  
   // Add item to the cart
   addItem: async (productId: string, quantity: number, size: string) => {
     const userId = useAuthStore.getState().user?._id; // Get the userId from the auth store
     if (!userId) throw new Error("User is not authenticated");
 
-    //POST request to add item to backend
+    // Fetch product details to get the stock quantity
+    const productResponse = await axios.get(`/products/${productId}`);
+    const product = productResponse.data;
+
+    // Check the total quantity of the product already in the cart
+    const existingItem = get().items.find(item => item.product._id === productId && item.size === size);
+    const existingQuantity = existingItem ? existingItem.quantity : 0;
+
+    // Check if the requested quantity plus existing quantity is less than or equal to the available stock
+    if (existingQuantity + quantity > product.quantity) {
+      throw new Error("Requested quantity exceeds available stock");
+    }
+
+    // POST request to add item to backend
     const { data } = await axios.post('/cart', { productId, quantity, userId, size });
     
-    //Updats cart state with the data from the backend
+    // Update cart state with the data from the backend
     set({ items: data.cartItems }); 
   },
+
   // Remove item from the cart
   removeItem: async (productId: string, size: string) => {
     const userId = useAuthStore.getState().user?._id; // Get the userId from the auth store
     if (!userId) throw new Error("User is not authenticated");
 
-    //POST request to add item to backend
+    // DELETE request to remove item from backend
     const { data } = await axios.delete(`/cart/${userId}/${productId}/${size}`);
 
-    //Updates cart state with data from backend
+    // Update cart state with data from backend
     set({ items: data.cartItems });
   },
+
   // Fetch cart items from the server
   fetchCart: async (userId: string) => {
     const { data } = await axios.get(`/cart/${userId}`);
     set({ items: data.cartItems }); 
   },
+
   // Clear the cart
   clearCart: () => set({ items: [] }),
 });
 
 // Create a Zustand store for the cart state, with persistence
 export const useCartStore = create<CartState>()(
-
-  //persist the cart state in local storage. 
   persist(cartStateCreator, {
     name: 'cart-storage', // unique name for the local storage key
     storage: createJSONStorage(() => localStorage), // use localStorage for persistence

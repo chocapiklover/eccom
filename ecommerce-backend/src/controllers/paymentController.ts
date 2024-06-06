@@ -40,8 +40,11 @@ export const createCheckoutSession = async (req: AuthenticatedRequest, res: Resp
       })),
       mode: 'payment', // Set the mode to payment
       success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`, // Set the success URL
-      cancel_url: `${process.env.CLIENT_URL}/cart`, // Set the cancel URL
+      cancel_url: `${process.env.CLIENT_URL}/`, // Set the cancel URL
       client_reference_id: userId, // Add this line to include the user ID
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA'], // Add allowed countries for shipping
+      },
     });
 
     // Return the session URL to the client
@@ -69,6 +72,7 @@ export const getSessionDetails = async (req: Request, res: Response) => {
         amount_total: session.amount_total,
         currency: session.currency,
         payment_status: session.payment_status,
+        shipping_details: session.shipping_details, // Include shipping details
       });
     } else {
       res.status(400).json({ error: 'Invalid session ID' });

@@ -9,12 +9,23 @@ import cartRoutes from './routes/cartRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import orderRoutes from './routes/orderRoutes';
 import webhookRoutes from './routes/webhookRoutes';
+import bodyParser from 'body-parser';
+import { handleStripeWebhook } from './controllers/webhookControllers';
+
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+
+// Use JSON body parser for all routes except Stripe webhook
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/webhooks/stripe-webhook') {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
 
 // Routes
 app.use('/api/users', userRoutes)
@@ -23,7 +34,9 @@ app.use('/api/brands', brandRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/checkout', paymentRoutes)
 app.use('/api/orders', orderRoutes);
-app.use('/api/webhooks', webhookRoutes);
+
+// Stripe webhook endpoint with raw body parser
+app.post('/api/webhooks/stripe-webhook', bodyParser.raw({ type: 'application/json' }), handleStripeWebhook);
 
 
 

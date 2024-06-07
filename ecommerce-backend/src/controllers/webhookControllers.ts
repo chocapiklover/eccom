@@ -3,6 +3,8 @@ import Stripe from 'stripe';
 import Cart from '../models/Cart';
 import Order from '../models/Order';
 import dotenv from 'dotenv';
+import Product, { IProduct } from '../models/Product';
+import User from '../models/User';
 
 dotenv.config();
 
@@ -38,7 +40,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
         console.log(`💰 Payment received for session: ${session.id}`);
-        await createOrderAndClearCart(session.client_reference_id!, session.id);
+        await createOrderAndClearCart(session.client_reference_id!, session.id, session.shipping_details);
         break;
       default:
         console.log(`❌ Unhandled event type ${event.type}`);
@@ -48,7 +50,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
   };
   
   // Create an order and clear the cart
-  const createOrderAndClearCart = async (userId: string, sessionId: string) => {
+  const createOrderAndClearCart = async (userId: string, sessionId: string, address: Stripe.Checkout.Session.ShippingDetails | null) => {
     try {
       // Find the cart for the user
       const cart = await Cart.findOne({ user: userId }).populate('cartItems.product');
@@ -66,11 +68,6 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
         throw new Error('Stripe session not found');
       }
   
-      // Check if amount_total is not null
-      if (session.amount_total === null) {
-        throw new Error('Amount total is null');
-      }
-  
       // Map cart items to order items
       const orderItems = cart.cartItems.map(item => ({
         product: item.product._id,
@@ -78,9 +75,21 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
         price: item.product.price,
         size: item.size,
       }));
+
+      if (address) {
+        await User.findByIdAndUpdate(userId, {
+          address: {
+            line1: address.address?.line1 ?? '',
+            city: address.address?.city ?? '',
+            country: address.address?.country ?? '',
+            postal_code: address.address?.postal_code ?? '',
+            state: address.address?.state ?? '',
+          },
+        });
+      }
   
       // Use the total amount from the Stripe session
-      const totalPrice = session.amount_total / 100; // Stripe amount is in cents
+      const totalPrice = session.amount_total! / 100; // Stripe amount is in cents
   
       // Create a new order
       const order = new Order({
@@ -95,10 +104,29 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
           update_time: new Date(session.created * 1000).toISOString(),
           email_address: session.customer_details?.email,
         },
+        address: {
+          line1: address?.address?.line1 ?? '',
+          city: address?.address?.city ?? '',
+          country: address?.address?.country ?? '',
+          postal_code: address?.address?.postal_code ?? '',
+          state: address?.address?.state ?? '',
+        },
       });
   
       // Save the order to the database
       await order.save();
+  
+      // Update stock quantities
+      for (const item of cart.cartItems) {
+        const product = await Product.findById(item.product._id) as IProduct | null;
+        if (product) {
+          const sizeStockItem = product.sizeStock.find(sizeItem => sizeItem.size === item.size);
+          if (sizeStockItem) {
+            sizeStockItem.stockQuantity -= item.quantity;
+            await product.save();
+          }
+        }
+      }
   
       // Clear the cart for the user
       await Cart.findOneAndUpdate({ user: userId }, { cartItems: [] }, { new: true });
@@ -108,4 +136,3 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
       console.error('Failed to create order and clear cart:', error);
     }
   };
-  

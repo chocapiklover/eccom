@@ -10,7 +10,20 @@ export interface IOrder extends Document {
   }[];
   totalPrice: number;
   isPaid: boolean;
-  paidAt?: Date;
+  paidAt: Date;
+  paymentResult: {
+    id: string;
+    status: string;
+    update_time: string;
+    email_address: string;
+  };
+  address: {
+    line1: string;
+    city: string;
+    country: string;
+    postal_code: string;
+    state: string;
+  };
 }
 
 const orderSchema: Schema<IOrder> = new mongoose.Schema(
@@ -52,6 +65,19 @@ const orderSchema: Schema<IOrder> = new mongoose.Schema(
     },
     paidAt: {
       type: Date,
+    },
+    paymentResult: {
+      id: { type: String },
+      status: { type: String },
+      update_time: { type: String },
+      email_address: { type: String },
+    },
+    address: {
+      line1: { type: String, required: true },
+      city: { type: String, required: true },
+      country: { type: String, required: true },
+      postal_code: { type: String, required: true },
+      state: { type: String, required: true },
     },
   },
   {

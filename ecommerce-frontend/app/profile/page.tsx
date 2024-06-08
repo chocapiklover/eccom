@@ -1,55 +1,74 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '../../context/userStore';
-import { useRouter } from 'next/navigation';
-import ProtectedRoute from '../../components/ProtectedRoute';
+import React, { useEffect, useState } from 'react';
+import axios from '../../utils/axios'; 
+import { useAuthStore } from '../../context/userStore'; 
+import PersonalInformation from '../../components/PersonalInfo';
 
-const Profile = () => {
-  const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
-  const router = useRouter();
+interface ShippingAddress {
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+}
+
+interface UserData {
+  name: string;
+  email: string;
+  shippingAddress?: ShippingAddress;
+}
+
+const ProfilePage = () => {
+  const { user } = useAuthStore();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user) {
-      router.push('/auth/login'); // Redirect to the login page if not authenticated
-    }
-  }, [user, router]);
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`/users/profile`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        setUserData(response.data);
+      } catch (err) {
+        setError('Failed to fetch user data');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!user) {
-    return null; // Return nothing while redirecting
-  }
+    if (user) {
+      fetchUserData();
+    }
+  }, [user]);
+
+  const handleUpdate = async (updatedData: UserData) => {
+    try {
+      const response = await axios.put(`/users/profile`, updatedData, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      setUserData(response.data);
+    } catch (err) {
+      setError('Failed to update user data');
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Profile</h1>
-      <div className="max-w-md mx-auto">
-        <div className="mb-4">
-          <label className="block mb-2 font-bold">Name:</label>
-          <p className="p-2 border rounded">{user.name}</p>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-bold">Email:</label>
-          <p className="p-2 border rounded">{user.email}</p>
-        </div>
-        <button
-          onClick={() => {
-            logout();
-            router.push('/login');
-          }}
-          className="mt-4 p-2 bg-red-500 text-white rounded"
-        >
-          Logout
-        </button>
-      </div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Profile Page</h1>
+      {userData && <PersonalInformation userData={userData} onUpdate={handleUpdate} />}
     </div>
   );
 };
-
-const ProfilePage = () => (
-  <ProtectedRoute>
-    <Profile />
-  </ProtectedRoute>
-);
 
 export default ProfilePage;

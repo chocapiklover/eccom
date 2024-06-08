@@ -4,7 +4,8 @@ import Cart from '../models/Cart';
 import Order from '../models/Order';
 import dotenv from 'dotenv';
 import Product, { IProduct } from '../models/Product';
-import User from '../models/User';
+import User, { IUser } from '../models/User';
+import mongoose, { UpdateQuery } from 'mongoose';
 
 dotenv.config();
 
@@ -71,19 +72,21 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
       // Map cart items to order items
       const orderItems = cart.cartItems.map(item => ({
         product: item.product._id,
+        productName: item.product.name, // Include the product name
         quantity: item.quantity,
         price: item.product.price,
         size: item.size,
       }));
-
+  
       if (address) {
         await User.findByIdAndUpdate(userId, {
-          address: {
+          shippingAddress: {
             line1: address.address?.line1 ?? '',
+            line2: address.address?.line2 ?? '',
             city: address.address?.city ?? '',
-            country: address.address?.country ?? '',
-            postal_code: address.address?.postal_code ?? '',
             state: address.address?.state ?? '',
+            postal_code: address.address?.postal_code ?? '',
+            country: address.address?.country ?? '',
           },
         });
       }
@@ -114,7 +117,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
       });
   
       // Save the order to the database
-      await order.save();
+      const savedOrder = await order.save();
   
       // Update stock quantities
       for (const item of cart.cartItems) {
@@ -131,7 +134,23 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
       // Clear the cart for the user
       await Cart.findOneAndUpdate({ user: userId }, { cartItems: [] }, { new: true });
   
-      console.log('Order created and cart cleared');
+      // Update the user's order history and shipping address
+      const userUpdateData: UpdateQuery<IUser> = {
+        $push: { orderHistory: savedOrder._id },
+      };
+      if (address) {
+        userUpdateData.shippingAddress = {
+          line1: address?.address?.line1 ?? '',
+          line2: address?.address?.line2 ?? '',
+          city: address?.address?.city ?? '',
+          state: address?.address?.state ?? '',
+          postal_code: address?.address?.postal_code ?? '',
+          country: address?.address?.country ?? '',
+        };
+      }
+      await User.findByIdAndUpdate(userId, userUpdateData);
+  
+      console.log('Order created, cart cleared, and user updated');
     } catch (error) {
       console.error('Failed to create order and clear cart:', error);
     }

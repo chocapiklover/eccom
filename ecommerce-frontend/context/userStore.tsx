@@ -36,9 +36,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     // Store the user data in local storage
     localStorage.setItem('user', JSON.stringify(data));
   },
+  // Logout function to clear the user state
   logout: () => {
     set({ user: null });
     localStorage.removeItem('user');
+    window.location.href = '/'; // Redirect to the home page after logging out
   },
 }));
 

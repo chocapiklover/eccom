@@ -55,11 +55,18 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
   }
 });
 
-// @desc    Get user profile
+// @desc    Get user profile with order history
 // @route   GET /api/users/profile
 // @access  Private
 export const getUserProfile = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const user = await User.findById(req.user?._id) as IUserWithId;
+  const user = await User.findById(req.user?._id)
+    .populate({
+      path: 'orderHistory',
+      populate: {
+        path: 'orderItems.product',
+        model: 'Product', 
+      },
+    }) as IUserWithId;
 
   if (user) {
     res.json({
@@ -67,6 +74,8 @@ export const getUserProfile = asyncHandler(async (req: AuthenticatedRequest, res
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      shippingAddress: user.shippingAddress,
+      orderHistory: user.orderHistory, // Include the populated order history
     });
   } else {
     res.status(404).json({ message: 'User not found' });
@@ -82,6 +91,14 @@ export const updateUserProfile = asyncHandler(async (req: AuthenticatedRequest, 
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
+    user.shippingAddress = {
+      line1: req.body.line1 || user.shippingAddress?.line1,
+      line2: req.body.line2 || user.shippingAddress?.line2,
+      city: req.body.city || user.shippingAddress?.city,
+      state: req.body.state || user.shippingAddress?.state,
+      postal_code: req.body.postal_code || user.shippingAddress?.postal_code,
+      country: req.body.country || user.shippingAddress?.country,
+    };
 
     if (req.body.password) {
       user.password = req.body.password;
@@ -94,6 +111,7 @@ export const updateUserProfile = asyncHandler(async (req: AuthenticatedRequest, 
       name: updatedUser.name,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      shippingAddress: updatedUser.shippingAddress,
       token: generateToken(updatedUser._id.toString()),
     });
   } else {

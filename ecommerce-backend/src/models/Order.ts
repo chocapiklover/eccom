@@ -1,13 +1,18 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+// Interface for the order items
+interface OrderItem {
+  product: mongoose.Schema.Types.ObjectId;
+  productName: string; // Add the product name field
+  quantity: number;
+  price: number;
+  size: string;
+}
+
+// Interface for the order document
 export interface IOrder extends Document {
   user: mongoose.Schema.Types.ObjectId;
-  orderItems: {
-    product: mongoose.Schema.Types.ObjectId;
-    quantity: number;
-    price: number;
-    size: string;
-  }[];
+  orderItems: OrderItem[];
   totalPrice: number;
   isPaid: boolean;
   paidAt: Date;
@@ -26,6 +31,7 @@ export interface IOrder extends Document {
   };
 }
 
+// Create the order schema
 const orderSchema: Schema<IOrder> = new mongoose.Schema(
   {
     user: {
@@ -39,6 +45,10 @@ const orderSchema: Schema<IOrder> = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           required: true,
           ref: 'Product',
+        },
+        productName: {
+          type: String,
+          required: true, // Ensure the product name is required
         },
         quantity: {
           type: Number,

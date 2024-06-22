@@ -89,16 +89,16 @@ export const updateUserProfile = asyncHandler(async (req: AuthenticatedRequest, 
   const user = await User.findById(req.user?._id) as IUserWithId;
 
   if (user) {
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    user.shippingAddress = {
-      line1: req.body.line1 || user.shippingAddress?.line1,
-      line2: req.body.line2 || user.shippingAddress?.line2,
-      city: req.body.city || user.shippingAddress?.city,
-      state: req.body.state || user.shippingAddress?.state,
-      postal_code: req.body.postal_code || user.shippingAddress?.postal_code,
-      country: req.body.country || user.shippingAddress?.country,
-    };
+    if (req.body.shippingAddress) {
+      user.shippingAddress = {
+        line1: req.body.shippingAddress.line1 || user.shippingAddress?.line1,
+        line2: req.body.shippingAddress.line2 || user.shippingAddress?.line2,
+        city: req.body.shippingAddress.city || user.shippingAddress?.city,
+        state: req.body.shippingAddress.state || user.shippingAddress?.state,
+        postal_code: req.body.shippingAddress.postal_code || user.shippingAddress?.postal_code,
+        country: req.body.shippingAddress.country || user.shippingAddress?.country,
+      };
+    }
 
     if (req.body.password) {
       user.password = req.body.password;

@@ -22,6 +22,7 @@ const useBrands = () => {
         setLoading(true);
         // Make the API call to fetch brands
         const { data } = await axios.get('/brands');
+        console.log('API response:', data); // Log the API response for debugging
         // Check if the response is an array
         if (Array.isArray(data)) {
           // Set the brands data to state
@@ -29,9 +30,22 @@ const useBrands = () => {
         } else {
           throw new Error('Invalid response format');
         }
-      } catch (error) {
-        // Set error message if the API call fails
-        setError('Failed to fetch brands');
+      } catch (error: any) {
+        // Handle different error structures
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('API error response:', error.response.data);
+          setError(`API error: ${error.response.data.message || error.response.statusText}`);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('No response received:', error.request);
+          setError('No response received from the API');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error('Error setting up request:', error.message);
+          setError(`Error: ${error.message}`);
+        }
       } finally {
         // Set loading state to false after the API call is done
         setLoading(false);

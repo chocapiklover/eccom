@@ -100,7 +100,7 @@ const Navbar = () => {
                     Cart
                   </button>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xl">Hello, {user.name}</span>
+                    <Link href="/profile" className="text-xl text-pink-400 pr-2 ">Hello, {user.name}</Link>
                     <button
                       onClick={logout}
                       className="hover:underline text-xl text-red-500"

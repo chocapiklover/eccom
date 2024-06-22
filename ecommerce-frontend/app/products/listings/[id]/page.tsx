@@ -65,6 +65,32 @@ const ProductPage = () => {
     }
   };
 
+  // Function to handle "Buy it now" process
+  const handleBuyNow = async () => {
+    if (!user) {
+      alert('Please log in to proceed with the purchase');
+      return;
+    }
+    if (!selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+    if (product) {
+      try {
+        const { data } = await axios.post('/checkout/create-checkout-session', {
+          userId: user._id,
+          productId: product._id,
+          size: selectedSize,
+          quantity: 1
+        });
+        window.location.href = data.url; // Redirect to Stripe Checkout
+      } catch (error) {
+        console.error('Checkout error:', error);
+        alert('Failed to initiate checkout');
+      }
+    }
+  };
+
   const settings = {
     dots: true,
     infinite: true,
@@ -112,7 +138,7 @@ const ProductPage = () => {
           <button onClick={handleAddToCart} className="w-full max-w-3xl py-3 text-lg border border-black mb-2 hover:border-pink-500 hover:text-pink-500">
             Add to cart
           </button>
-          <button className="w-full max-w-3xl py-3 bg-black text-white text-lg hover:bg-pink-500">
+          <button onClick={handleBuyNow} className="w-full max-w-3xl py-3 bg-black text-white text-lg hover:bg-pink-500">
             Buy it now
           </button>
           <div className="mt-4">

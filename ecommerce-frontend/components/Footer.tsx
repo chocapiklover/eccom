@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 const Footer = () => {
-    return (
-        <div className="bg-gray-200 border-t border-gray-600">
+  return (
+    <div className="bg-gray-200 border-t border-gray-600">
       <div className="bg-pink-300 text-black py-4 px-8 flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-600">
         <span className="mb-2 md:mb-0">Receive special offers and first look at new products.</span>
         <div className="flex flex-col md:flex-row items-start md:items-center w-full md:w-auto">
@@ -14,14 +14,14 @@ const Footer = () => {
           <button className="bg-transparent text-black border-none underline">Subscribe →</button>
         </div>
       </div>
-      <div className=" flex flex-col md:flex-row border-gray-600">
-        <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-600 pt-10 pl-2  md:py-0 pr-4">
+      <div className="flex flex-col md:flex-row border-gray-600">
+        <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-600 pt-10 pl-2 md:py-0 pr-4">
           <h3 className="font-semibold mb-2 sm:pt-4">About</h3>
-          <p>This is a demo store. Product shots are provided by <a href="https://www.goat.com/en-de">GOAT</a>.</p>
+          <p>This is a demo store. Product shots are provided by <a href="https://www.goat.com/en-de" className="underline hover:text-pink-500">GOAT</a>.</p>
         </div>
         <div className="flex-1 border-b pt-6 pl-2 md:border-b-0 md:border-r border-gray-600 md:py-0 pr-4">
           <h3 className="font-semibold mb-2 pt-4">Shop</h3>
-          <ul className="pb-8 ">
+          <ul className="pb-8">
             <li>
               <Link href="/products" className="hover:underline hover:text-pink-500 block">
                 Shop All
@@ -53,8 +53,8 @@ const Footer = () => {
             <li>Contact</li>
           </ul>
         </div>
-        <div className="flex-1 py-4 pl-2  md:py-0">
-          <h3 className="font-semibold mb-2 mt-4" >Find Us</h3>
+        <div className="flex-1 py-4 pl-2 md:py-0">
+          <h3 className="font-semibold mb-2 mt-4">Find Us</h3>
           <ul className="pb-8">
             <li>Facebook</li>
             <li>Instagram</li>
@@ -64,7 +64,7 @@ const Footer = () => {
         </div>
       </div>
     </div>
-    );
-  };
-  
-  export default Footer;
+  );
+};
+
+export default Footer;

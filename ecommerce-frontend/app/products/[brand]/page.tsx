@@ -11,12 +11,23 @@ import useBrands from '../../../hooks/useBrands';
 import Link from 'next/link';
 
 
+// Define Brand interface
+interface Brand {
+  _id: string;
+  name: string;
+}
+
+// Define Brand interface
+interface Brand {
+  _id: string;
+  name: string;
+}
 
 const BrandProducts = () => {
-   // Capture the brand name from the URL and decode it
-   const params = useParams();
-   const rawBrandName = Array.isArray(params.brand) ? params.brand[0] : params.brand;
-   const brandName = decodeURIComponent(rawBrandName || '');
+  // Capture the brand name from the URL and decode it
+  const params = useParams();
+  const rawBrandName = Array.isArray(params.brand) ? params.brand[0] : params.brand;
+  const brandName = decodeURIComponent(rawBrandName || '');
 
   // Fetch products and brands using the hooks
   const { products, loading: productsLoading, error: productsError } = useProducts();
@@ -36,7 +47,12 @@ const BrandProducts = () => {
       const brand = brands.find((b) => b.name.toLowerCase() === brandName.toLowerCase());
       if (brand) {
         // Filter products by the brand ID
-        const filtered = products.filter((product) => product.brand === brand._id);
+        const filtered = products.filter((product) => {
+          if (typeof product.brand === 'object' && 'name' in product.brand) {
+            return (product.brand as Brand)._id === brand._id;
+          }
+          return false;
+        });
         console.log('Filtered Products:', filtered);
         // Set the filtered products to state
         setFilteredProducts(filtered);
@@ -51,23 +67,19 @@ const BrandProducts = () => {
   if (!brandName) return <div>Brand is not specified</div>;
 
   return (
-
-    // {/* Top Section with the selected brand and list of brands */}
     <div className="bg-gray-200 min-h-screen">
-      <div className=" border-b border-gray-800 w-screen">
-          <h1 className="text-5xl font-medium capitalize pl-2 mb-4 pt-3 ">{brandName}</h1>
-      <div className=" pl-2 flex flex-wrap items-left border-t border-gray-800">
-      {brands.map((brand) => (
-        <Link key={brand._id} href={`/products/${brand.name.toLowerCase()}`} className="text-xl text-pink-500 hover:underline mr-4 sm:my-2">
-          {brand.name}
-        </Link>
-      ))}
-    </div>
-  </div>
+      <div className="border-b border-gray-800 w-screen">
+        <h1 className="text-5xl font-medium capitalize pl-2 mb-4 pt-3 ">{brandName}</h1>
+        <div className="pl-2 flex flex-wrap items-left border-t border-gray-800">
+          {brands.map((brand) => (
+            <Link key={brand._id} href={`/products/${brand.name.toLowerCase()}`} className="text-xl text-pink-500 hover:underline mr-4 sm:my-2">
+              {brand.name}
+            </Link>
+          ))}
+        </div>
+      </div>
 
-
-
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-grow">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-grow">
         {filteredProducts.length === 0 ? (
           <div>No products found for this brand.</div>
         ) : (
@@ -87,7 +99,6 @@ const BrandProducts = () => {
         )}
       </div>
     </div>
-    
   );
 };
 

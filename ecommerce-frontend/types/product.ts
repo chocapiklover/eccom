@@ -8,8 +8,8 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  brand: string;
-  sizeStock: SizeStock[];
+  brand: { _id: string; name: string };
+  sizeStock: { size: string; stockQuantity: number }[];
   color: string;
   images: string[];
 }

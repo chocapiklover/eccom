@@ -45,31 +45,37 @@ const settings = {
 };
 
 const DunksCarousel = () => {
-  const { products, loading: productsLoading, error: productsError } = useProducts(); // Use the hook to fetch products
-  const { brands, loading: brandsLoading, error: brandsError } = useBrands(); // Use the hook to fetch brands
+  const { products, loading: productsLoading, error: productsError } = useProducts();
+  const { brands, loading: brandsLoading, error: brandsError } = useBrands();
 
-  if (productsLoading || brandsLoading) return <div>Loading...</div>; // Handle loading state
-  if (productsError) return <div>{productsError}</div>; // Handle error state
-  if (brandsError) return <div>{brandsError}</div>; // Handle error state
+  if (productsLoading || brandsLoading) return <div>Loading...</div>;
+  if (productsError) return <div>{productsError}</div>;
+  if (brandsError) return <div>{brandsError}</div>;
 
   // Find the brand ID for "Nike Dunks"
   const nikeDunksBrand = brands.find(brand => brand.name.toLowerCase() === 'nike dunks');
-  if (!nikeDunksBrand) return <div>Nike Dunks brand not found</div>;
+  if (!nikeDunksBrand) {
+    console.error('Nike Dunks brand not found', brands);
+    return <div>Nike Dunks brand not found</div>;
+  }
 
   // Filter products that belong to "Nike Dunks"
-  const nikeDunksProducts = products.filter(product => product.brand === nikeDunksBrand._id);
+  const nikeDunksProducts = products.filter(product => {
+    if (typeof product.brand === 'object' && 'name' in product.brand) {
+      return (product.brand as { _id: string })._id === nikeDunksBrand._id;
+    }
+    return false;
+  });
 
   // Limit the number of products to display (optional)
   const displayedProducts = nikeDunksProducts.slice(0, 5);
 
   return (
     <section className="featured-collection border-b border-gray-300">
-      {/* Dunks */}
       <div className="border-gray-600 bg-gray-200 pb-8 pt-8 text-gray-800 lg:flex items-end justify-between">
         <h2 className="font-bold text-3xl px-2">Nike Dunks</h2>
       </div>
 
-      {/* Carousel */}
       <div className="bg-gray-200 overflow-hidden pb-8">
         <Slider {...settings}>
           {displayedProducts.map((product, index) => (

@@ -70,7 +70,7 @@ const Navbar = () => {
       <nav className="relative py-">
         <div className="flex items-center justify-between px-4 py-2 border-b">
           <div className="text-2xl font-bold">
-            <Link href="/">Baseline</Link>
+            <Link href="/">StreetHeat</Link>
           </div>
           <div className="hidden lg:flex flex-1 justify-evenly">
             <div className="relative text-xl">

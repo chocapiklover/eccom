@@ -5,6 +5,7 @@ import React, { useState, ChangeEvent } from 'react';
 import Fuse from 'fuse.js';
 import useProducts from '../../hooks/useProduct';
 import { Product } from '@/types/product';
+import Link from 'next/link';
 
 // Define the SearchComponent
 const SearchComponent: React.FC = () => {
@@ -20,7 +21,7 @@ const SearchComponent: React.FC = () => {
   // Initialize Fuse.js with products and search keys
   const fuse = new Fuse(products, {
     keys: ['name', 'description', 'brand.name'], // Search in name, description, and brand name
-    threshold: 0.3, // Sensitivity of the search
+    threshold: 0.3, 
   });
 
   // Handle search input change
@@ -54,21 +55,23 @@ const SearchComponent: React.FC = () => {
       {/* Display search results */}
       <ul className="mt-4">
         {results.map((product, index) => (
-          <li key={index} className="border-b py-2 flex items-center">
-            {/* Product image */}
-            <img
-              src={product.images[0] || '/path/to/default-image.jpg'} // Use a default image if undefined
-              alt={product.name}
-              className="w-10 h-10 mr-4"
-            />
-            <div>
-              {/* Product details */}
-              <p className="font-bold">{product.name}</p>
-              <p>{product.description}</p>
-              <p>Brand: {(product.brand as any).name}</p> {/* Display the brand name */}
-              <p>Price: ${product.price}</p>
-            </div>
-          </li>
+          <Link key={product._id} href={`/products/listings/${product._id}`} className="block">
+            <li className="border-b py-2 flex items-center">
+              {/* Product image */}
+              <img
+                src={product.images[0]} 
+                alt={product.name}
+                className="mr-4"
+              />
+              <div>
+                {/* Product details */}
+                <p className="font-bold">{product.name}</p>
+                <p>{product.description}</p>
+                <p>Brand: {(product.brand as any).name}</p> {/* Display the brand name */}
+                <p>Price: ${product.price}</p>
+              </div>
+            </li>
+          </Link>
         ))}
       </ul>
     </div>

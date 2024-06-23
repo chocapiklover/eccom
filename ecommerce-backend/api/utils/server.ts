@@ -1,4 +1,5 @@
-import app from './app';
+//ecommerce-backend/api/utils/server.ts
+import app from '../utils/app';
 import mongoose from 'mongoose';
 
 //TODO: add mongodb URI and create env

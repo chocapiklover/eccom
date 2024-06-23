@@ -1,0 +1,9 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "ecommerce-backend/api/index.ts", "use": "@vercel/node" }
+    ],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "ecommerce-backend/api/index.ts" }
+    ]
+  }

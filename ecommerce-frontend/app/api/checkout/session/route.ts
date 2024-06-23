@@ -1,29 +1,31 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-04-10',
 });
 
-const getSession = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { session_id } = req.query;
-  
-    try {
-      if (typeof session_id === 'string') {
-        const session = await stripe.checkout.sessions.retrieve(session_id, {
-          expand: ['line_items', 'customer'],
-        });
-        res.status(200).json(session);
-      } else {
-        res.status(400).json({ error: 'Invalid session ID' });
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'An unexpected error occurred' });
-      }
+// Function to handle the GET request
+export async function GET(req: NextRequest) {
+  // Extract the session ID from the query parameters
+  const { searchParams } = new URL(req.url);
+  const session_id = searchParams.get('session_id');
+
+  try {
+    // Check if session_id is valid
+    if (session_id) {
+      // Retrieve the session from Stripe
+      const session = await stripe.checkout.sessions.retrieve(session_id, {
+        expand: ['line_items', 'customer'],
+      });
+      // Return the session data as JSON
+      return NextResponse.json(session, { status: 200 });
+    } else {
+      // Return an error response if the session_id is invalid
+      return NextResponse.json({ error: 'Invalid session ID' }, { status: 400 });
     }
-  };
-  
-  export { getSession as GET };
+  } catch (error: any) {
+    // Handle any errors that occur during the session retrieval
+    return NextResponse.json({ error: error.message || 'An unexpected error occurred' }, { status: 500 });
+  }
+}

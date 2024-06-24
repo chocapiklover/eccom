@@ -2,11 +2,12 @@
   "name": "ecommerce-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "api/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.js",
-    "dev": "nodemon"
+    "start": "node dist/utils/server.js",
+    "dev": "nodemon", 
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

@@ -50,6 +50,9 @@ const Login = () => {
           Login
         </button>
       </form>
+      <p className="mt-4 text-center">
+        Not a member yet? <a href="register" className="text-blue-500">Sign Up</a>
+      </p>
     </div>
   </div>
   <div className="w-1/2">

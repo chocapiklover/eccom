@@ -23,7 +23,7 @@ const Login = () => {
 
   return (
     <div className="h-screen flex">
-  <div className="w-1/2 flex items-center justify-center">
+  <div className="sm:w-1/2 w-full flex items-center justify-center">
     <div className="w-3/4 p-8 bg-white">
       <h2 className="text-3xl font-semibold mb-6">Login</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -55,7 +55,7 @@ const Login = () => {
       </p>
     </div>
   </div>
-  <div className="w-1/2">
+  <div className="sm:w-1/2 hidden sm:block">
     <img src="https://i.etsystatic.com/32268171/r/il/93a9b5/3753280368/il_fullxfull.3753280368_m2m1.jpg" alt="Two people smiling" className="object-cover h-full w-full" />
   </div>
 </div>
